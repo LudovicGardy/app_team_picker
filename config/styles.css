@@ -1,0 +1,22 @@
+/* styles.css */
+.main-title {
+    text-align: center;
+    font-size: 2.5em;
+    color: #FF5733;
+    margin-bottom: 0.5em;
+}
+
+.header {
+    font-size: 2em;
+    color: #2874A6;
+}
+
+.success {
+    font-size: 1.2em;
+    color: green;
+}
+
+.error {
+    font-size: 1.2em;
+    color: red;
+}

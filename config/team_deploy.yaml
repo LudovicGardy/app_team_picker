@@ -1,0 +1,21 @@
+members:
+- active: true
+  name: Marie
+- active: true
+  name: Jean-Marc
+- active: true
+  name: Nahuel
+- active: true
+  name: "Aur\xE9lien"
+- active: true
+  name: Sanaa
+- active: true
+  name: "Jos\xE9phine"
+- active: true
+  name: Ludovic
+- active: true
+  name: Nabil
+- active: true
+  name: Harris
+- active: true
+  name: Alona
