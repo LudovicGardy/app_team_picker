@@ -16,7 +16,6 @@ if not firebase_admin._apps:
 
 db = firestore.client()
 
-# Fonctions Firebase pour lire et écrire les données
 def load_members(team_name):
     members_ref = db.collection('teams').document(team_name).collection('members')
     members = []
@@ -33,7 +32,6 @@ def delete_member(team_name, member_name):
     member_ref = db.collection('teams').document(team_name).collection('members').document(member_name)
     member_ref.delete()
 
-# Log de l'événement
 def log_result(team_name, name):
     log_ref = db.collection('teams').document(team_name).collection('logs').document()
     log_ref.set({'name': name, 'timestamp': datetime.now()})
@@ -47,13 +45,10 @@ funny_phrases = [
     "Youpi, {} ! Tu es notre super star !"
 ]
 
-# Ajout de styles CSS
-# Charger le CSS depuis un fichier
 def load_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-# Charger le fichier CSS
 load_css('config/styles.css')
 
 st.markdown('<div class="main-title">Application de Tirage au Sort</div>', unsafe_allow_html=True)
@@ -73,9 +68,6 @@ with st.sidebar:
 
 team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_build", "team_deploy", "team_test"])
 
-# st.sidebar.header('Membres Actuels')
-
-# Créer des onglets
 tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
 
 with tabs[0]:
@@ -83,7 +75,6 @@ with tabs[0]:
     
     members = load_members(team_name)
     
-    # Ajouter des toggles pour chaque membre
     active_members = []
     for member in members:
         is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
@@ -113,7 +104,7 @@ with tabs[1]:
         member = {'name': new_member, 'active': True}
         save_member(team_name, member)
         st.markdown(f'<div class="success">{new_member} a été ajouté à la liste.</div>', unsafe_allow_html=True)
-        st.experimental_rerun()  # Rafraîchir la page pour afficher le nouveau membre
+        st.experimental_rerun()
     
     members_names = [member['name'] for member in members]
     st.markdown('<div class="header">Supprimer un Membre</div>', unsafe_allow_html=True)
@@ -121,4 +112,4 @@ with tabs[1]:
     if st.button('Supprimer', key='remove_member'):
         delete_member(team_name, member_to_remove)
         st.markdown(f'<div class="success">{member_to_remove} a été supprimé de la liste.</div>', unsafe_allow_html=True)
-        st.experimental_rerun()  # Rafraîchir la page pour mettre à jour la liste des membres
+        st.experimental_rerun()
