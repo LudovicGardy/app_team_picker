@@ -1,60 +1,81 @@
-# Description
-This program presents convolutional kernel density estimation, a method used to detect intercritical epilpetic spikes (IEDs) in [Gardy et al., 2019].
+# Team Picker
 
-The user provides a time series as input. The algorithm will perform the following steps:
-- Transform the timeseries into an image
-- Convolve this image
+## 📄 Description
 
-The user can then apply filters, like a low-pass filter, to isolate low density events, such as IEDs.
+🎲 Discover an application designed to randomly pick a member of your team for various activities or tasks.
 
-Please, open _**`main.py`**_ and change the path inside to use the program.
+🤔 “Who should be the next to speak?” This application helps answer this question by providing a fun and fair way to select a random team member. Whether it's for a meeting, a presentation, or any team activity, let chance decide!
 
-# Procedure example (main.py)
-```
-### Init parameters (root is the path to the folder you have downloaded)
-root = r"~/CKDE"
-event_num = 5
+Here's a tool that allows you to manage team members, add or remove members, and perform a random selection with a fun twist. Ideal for teams who want to add an element of surprise and fairness to their processes.
 
-### Get a timeseries filepath (look in the folder you have downloaded)
-timeseries_folderpath =  os.path.join(root, "test_events_database\events_signal_data")
-timeserie_filename = f"event_{event_num}.txt"
+👉 Access the app and start your random selection now at [coming soon].
 
-### Load a timeseries from the sample data provided with this program (1D)
-signal = load_timeseries(timeseries_folderpath, timeserie_filename) # or,
-#signal = random_signal_simulation()
+![Image1](images/image1.png)
 
-### Get the timeseries info
-json_dict = json.load(open(os.path.join(root,"test_events_database\events_info.json")))
-sfreq = json_dict["events_info"][event_num]["sampling_frequency"]
+## Prerequisites
+- Anaconda or Miniconda
+- Docker (for Docker deployment)
 
-### Convert it to a 2D signal
-image_2D = from_1D_to_2D(signal, bandwidth = 1)
+## ⚒️ Installation
 
-### Convolve the 2D signal
-image_2D_convolved = convolve_2D_image(image_2D, convolution = "gaussian custom")
+### Prerequisites
+- Python 3.11
+- Python libraries
+    ```sh
+    pip install -r requirements.txt
+    ```
 
-### Plot result
-fig_name = "Epileptic spike (signal duration: 400 ms) \n\n[1] raw [2] imaged [3] convoluted"
-pot_result(signal, image_2D, image_2D_convolved, fig_name)
-```
+## 📝 Usage
 
-# Some information about the dataset
-We propose some simulated data to validate our procedure with a known frequency, duration and position. This database is structured as shown in figure 1. User can either use these data, use his own, or simulate some. A signal simulation function is also provided in the program.
+### Running without Docker
 
-![](illustrations/JSON_database_structure.jpg)
+1. **Clone the repository and navigate to the directory**
+    ```bash
+    git pull https://github.com/LudovicGardy/app_team_picker
+    cd team_picker_repos/app_folder
+    ```
 
-# Methods
-Figure 2 shows how the convolved image (2D) is drawn from the raw signal (1D). A: Convolution process. B: Full process.
+2. **Environment setup**
+    - Create and/or activate the virtual environment:
+        ```bash
+        conda create -n myenv python=3.11
+        conda activate myenv
+        ```
+        or
+        ```bash
+        source .venv/bin/activate
+        ```
 
-![](illustrations/Methods.png)
+3. **Launch the Streamlit App**
+    - Run the Streamlit application:
+        ```bash
+        streamlit run main.py
+        ```
 
-# Results
-Figure 3 shows the result of the full process. The timeseries used as input is an IED called "event_5" in the data sample we provide with this program.
+### Running with Docker
 
-![](illustrations/Results.png)
+1. **Prepare Docker environment**
+    - Ensure Docker is installed and running on your system.
 
-# References
-Gardy, L., Barbeau, E., and Hurter, C. (2020). Automatic detection of epileptic spikes in intracerebral eeg with convolutional kernel density estimation. In 4th International Conference on Human Computer Interaction Theory and Applications, pages 101–109. SCITEPRESS-Science and Technology Publications. https://doi.org/10.5220/0008877601010109
+2. **Navigate to project directory**
+    - For multiple containers:
+        ```bash
+        cd [path-to-app-folder-containing-docker-compose.yml]
+        ```
+    - For a single container:
+        ```bash
+        cd [path-to-app-folder-containing-Dockerfile]
+        ```
 
-# Dependencies
-See requirements.txt
+3. **Build and start the containers**
+    ```bash
+    docker-compose up --build
+    ```
+
+    - The application will be accessible at `localhost:8501`.
+
+    - ⚠️ If you encounter issues with `pymssql`, adjust its version in `requirements.txt` or remove it before building the Docker image.
+
+## 👤 Author
+- LinkedIn: [Ludovic Gardy](https://www.linkedin.com/in/ludovic-gardy/)
+- Website: [https://www.sotisanalytics.com](https://www.sotisanalytics.com)

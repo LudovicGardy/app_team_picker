@@ -1,10 +1,24 @@
 ### Ignore these folders
 __pycache__/
-.vs/
-.venv/
 .mypy_cache/
-.idea/
+.venv/
+.vs/
+.buffer/
+.ipynb_checkpoints/
+_archives/
+derivatives/
+program/.ipynb_checkpoints
+program/events_data
+pptx/
+
 
 ### Ignore these files
-test.py
 .DS_Store
+.env
+Shared_scripts.pyproj
+from_yaml_to_firebase.ipynb
+Shared_scripts.sln
+start_demo_extended.ipynb
+app-team-picker-firebase.json
+app.py
+results_log.txt
