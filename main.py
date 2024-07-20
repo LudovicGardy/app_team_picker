@@ -9,7 +9,7 @@ from modules.ui_components import load_css, display_sidebar, display_home_tab, d
 initialize_firebase(firebase_credentials)
 
 load_css('config/styles.css')
-st.markdown('<div class="main-title">Application de Tirage au Sort</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-title">Réunion de la Table Ovale</div>', unsafe_allow_html=True)
 
 with st.sidebar:
     display_sidebar(page_config)

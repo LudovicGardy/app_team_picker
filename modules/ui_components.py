@@ -22,7 +22,7 @@ def display_sidebar(config):
     st.divider()
 
 def display_home_tab(team_name):
-    st.markdown('<div class="header">Désigner une Personne</div>', unsafe_allow_html=True)
+    st.markdown('<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True)
     
     members = load_members(team_name)
     
@@ -34,16 +34,19 @@ def display_home_tab(team_name):
             active_members.append(member['name'])
         save_member(team_name, member)
     
-    if st.button(''):
+    if st.button('DESIGNER UN MEMBRE'):
         if active_members:
             selected_person = random.choice(active_members)
-            phrase = random.choice(wrap_phrases).format(selected_person)
+            phrase = random.choice(wrap_phrases).split('{}')
             log_result(team_name, selected_person)
     
             with st.spinner('Tirage en cours...'):
                 time.sleep(3)
     
-            st.write(f"<h1 style='text-align: center; color: #2874A6;'>{phrase}</h1>", unsafe_allow_html=True)
+            st.markdown(
+                f"<h3 style='text-align: center; color: rgb(90, 174, 171);'>{phrase[0]}<span style='color: rgb(210, 80, 128);'>{selected_person}</span>{phrase[1]}</h3>",
+                unsafe_allow_html=True
+            )
         else:
             st.markdown('<div class="error">Aucun membre actif pour le tirage !</div>', unsafe_allow_html=True)
 
