@@ -6,7 +6,7 @@ from modules.ui_components import init_page_config, load_css, display_sidebar, d
 
 class App:
     def __init__(self):
-        init_page_config()
+        init_page_config(page_config)
         initialize_firebase(firebase_credentials)
         load_css('config/styles.css')
         
