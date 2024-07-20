@@ -39,7 +39,7 @@ def page_config():
         'base': 'dark',
         'page_icon': f'images/invivo_DF.png',
         'page_logo': f'images/invivo_DF_white.png',
-        'layout': 'wide',
+        'layout': 'centered',
         'initial_sidebar_state': 'auto',
         'markdown': '''
                     <style>
