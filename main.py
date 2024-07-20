@@ -4,7 +4,10 @@ import time
 
 from modules.config import page_config, firebase_credentials
 from modules.database import initialize_firebase, load_members, save_member, delete_member, log_result
-from modules.ui_components import load_css, display_sidebar, display_home_tab, display_add_remove_tab
+from modules.ui_components import init_page_config, load_css, display_sidebar, display_home_tab, display_add_remove_tab
+
+
+init_page_config()
 
 initialize_firebase(firebase_credentials)
 
