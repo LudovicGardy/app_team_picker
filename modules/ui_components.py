@@ -3,8 +3,15 @@ import random
 import time
 from modules.database import load_members, save_member, delete_member, log_result
 from modules.utils import load_phrases
+from modules.config import page_config, firebase_credentials
 
 wrap_phrases = load_phrases('config/wrap_phrases.yaml')
+
+def init_page_config(): ### Must be called before any other st. function
+    st.set_page_config(page_title=page_config().get('page_title'), 
+                page_icon = page_config().get('page_icon'),  
+                layout = page_config().get('layout'),
+                initial_sidebar_state = page_config().get('initial_sidebar_state'))
 
 def load_css(file_name):
     with open(file_name) as f:
