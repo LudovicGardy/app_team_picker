@@ -44,7 +44,7 @@ def display_home_tab(team_name):
                 time.sleep(3)
     
             st.markdown(
-                f"<h3 style='text-align: center; color: rgb(90, 174, 171);'>{phrase[0]}<span style='color: rgb(210, 80, 128);'>{selected_person}</span>{phrase[1]}</h3>",
+                f"<h3 class='wrap_phrase'>{phrase[0]}<span class='selected_name'>{selected_person}</span>{phrase[1]}</h3>",
                 unsafe_allow_html=True
             )
         else:
