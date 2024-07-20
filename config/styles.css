@@ -13,6 +13,15 @@
     color: #fff;
 }
 
+.wrap_phrase {
+    text-align: center;
+    color: rgb(90, 174, 171);
+}
+
+.selected_name {
+    color: rgb(210, 80, 128);
+}
+
 .success {
     font-size: 1.2em;
     color: green;
