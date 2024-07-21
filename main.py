@@ -4,6 +4,7 @@ from modules.ui_components import init_page_config, load_css, display_sidebar, d
 
 class App:
     def __init__(self):
+
         init_session_state()
         init_page_config(page_config)
         load_css('config/styles.css')
@@ -12,6 +13,14 @@ class App:
 
         with st.sidebar:
             display_sidebar(page_config)
+
+        pg = st.navigation([
+            st.Page(self.page1, title="Accueil", icon="🏠"),
+            st.Page(self.page2, title="A propos", icon="ℹ️"),
+        ])
+        pg.run()
+
+    def page1(self):
 
         team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_build", "team_deploy", "team_test"])
 
@@ -23,5 +32,13 @@ class App:
         with tabs[1]:
             display_add_remove_tab(team_name)
 
+    def page2(self):
+        st.write("# A propos")
+        st.write("Cette page n'est pas encore implémentée.")
+
+    
 if __name__ == '__main__':
-    app = App() 
+    app = App()
+
+
+
