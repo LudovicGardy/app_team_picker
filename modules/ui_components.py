@@ -69,7 +69,7 @@ def display_home_tab(team_name):
             # with st.spinner('Tirage en cours...'):
             #     time.sleep(3)
     
-            with st.status("Downloading data...", expanded=True) as status:
+            with st.status("Chargement...", expanded=True) as status:
                 st.write("Recherche d'un candidat...")
                 time.sleep(2)
                 st.write("Validation du candidat...")
