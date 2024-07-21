@@ -1,36 +1,50 @@
 import firebase_admin
 from firebase_admin import firestore, credentials
 from datetime import datetime
+from modules.config import firebase_credentials
+import streamlit as st
 
-db = None
+class Database:
 
-def initialize_firebase(credentials_func):
-    global db
-    if not firebase_admin._apps:
-        try:
-            cred = credentials_func()
-            cred = credentials.Certificate(cred)
-            firebase_admin.initialize_app(cred)
-            db = firestore.client()
-        except Exception as e:
-            print(f"Erreur lors de l'initialisation de Firebase: {e}")
+    def __init__(self):
+        self.initialize_firebase(firebase_credentials)
 
-def load_members(team_name):
-    members_ref = db.collection('teams').document(team_name).collection('members')
-    members = []
-    docs = members_ref.stream()
-    for doc in docs:
-        members.append(doc.to_dict())
-    return members
+    def initialize_firebase(self, credentials_func):
+        if 'db' not in st.session_state:
+            if not firebase_admin._apps:
+                try:
+                    cred = credentials_func()
+                    cred = credentials.Certificate(cred)
+                    firebase_admin.initialize_app(cred)
+                    st.session_state.db = firestore.client()
+                except Exception as e:
+                    print(f"Erreur lors de l'initialisation de Firebase: {e}")
+        self.db = st.session_state.db
 
-def save_member(team_name, member):
-    member_ref = db.collection('teams').document(team_name).collection('members').document(member['name'])
-    member_ref.set(member)
+    def ensure_initialized(self):
+        if not hasattr(self, 'db') or self.db is None:
+            raise RuntimeError("Firebase database is not initialized. Call initialize_firebase() first.")
 
-def delete_member(team_name, member_name):
-    member_ref = db.collection('teams').document(team_name).collection('members').document(member_name)
-    member_ref.delete()
+    def load_members(self, team_name):
+        self.ensure_initialized()
+        members_ref = self.db.collection('teams').document(team_name).collection('members')
+        members = []
+        docs = members_ref.stream()
+        for doc in docs:
+            members.append(doc.to_dict())
+        return members
 
-def log_result(team_name, name):
-    log_ref = db.collection('teams').document(team_name).collection('logs').document()
-    log_ref.set({'name': name, 'timestamp': datetime.now()})
+    def save_member(self, team_name, member):
+        self.ensure_initialized()
+        member_ref = self.db.collection('teams').document(team_name).collection('members').document(member['name'])
+        member_ref.set(member)
+
+    def delete_member(self, team_name, member_name):
+        self.ensure_initialized()
+        member_ref = self.db.collection('teams').document(team_name).collection('members').document(member_name)
+        member_ref.delete()
+
+    def log_result(self, team_name, name):
+        self.ensure_initialized()
+        log_ref = self.db.collection('teams').document(team_name).collection('logs').document()
+        log_ref.set({'name': name, 'timestamp': datetime.now()})

@@ -1,8 +1,12 @@
 import streamlit as st
 import random
 import time
-from modules.database import load_members, save_member, delete_member, log_result
 from modules.utils import load_phrases, normalize_value
+
+
+if 'database' not in st.session_state:
+    from modules.database import Database
+    st.session_state.database = Database()
 
 wrap_phrases = load_phrases('config/wrap_phrases.yaml')
 
@@ -14,7 +18,7 @@ def init_page_config(page_config): ### Must be called before any other st. funct
 
 def load_css(file_name):
     with open(file_name) as f:
-        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True) 
 
 def display_sidebar(page_config):
 
@@ -32,9 +36,11 @@ def display_sidebar(page_config):
     st.divider()
 
 def display_home_tab(team_name):
+    database = st.session_state.database
+
     st.markdown('<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True)
     
-    members = load_members(team_name)
+    members = database.load_members(team_name)
     
     active_members = []
     with st.sidebar: ### Spinner is displayed in the sidebar
@@ -43,20 +49,19 @@ def display_home_tab(team_name):
         progress_bar = st.progress(0, text=progress_text)
 
         for i, member in enumerate(members):
-            is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
+            is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name) 
             member['active'] = is_active
             if is_active:
                 active_members.append(member['name'])
-            save_member(team_name, member)
-            progress_bar.progress(normalize_value(i+1,0,len(members)), text=progress_text)
+            database.save_member(team_name, member)
+            progress_bar.progress(normalize_value(i+1,0,len(members)), text=progress_text) 
         progress_bar.empty()
-
 
     if st.button('DESIGNER UN MEMBRE'):
         if active_members:
             selected_person = random.choice(active_members)
             phrase = random.choice(wrap_phrases).split('{}')
-            log_result(team_name, selected_person)
+            database.log_result(team_name, selected_person)
     
             with st.spinner('Tirage en cours...'):
                 time.sleep(3)
@@ -69,20 +74,22 @@ def display_home_tab(team_name):
             st.markdown('<div class="error">Aucun membre actif pour le tirage !</div>', unsafe_allow_html=True)
 
 def display_add_remove_tab(team_name):
+    database = st.session_state.database
+
     st.markdown('<div class="header">Ajouter un Membre</div>', unsafe_allow_html=True)
     
     new_member = st.text_input('Saisir le nom du membre')
     if st.button('Ajouter', key='add_member'):
         member = {'name': new_member, 'active': True}
-        save_member(team_name, member)
+        database.save_member(team_name, member)
         st.markdown(f'<div class="success">{new_member} a été ajouté à la liste.</div>', unsafe_allow_html=True)
-        st.rerun()
+        st.experimental_rerun()
     
-    members = load_members(team_name)
+    members = database.load_members(team_name)
     members_names = [member['name'] for member in members]
     st.markdown('<div class="header">Supprimer un Membre</div>', unsafe_allow_html=True)
     member_to_remove = st.selectbox('Sélectionner un membre à supprimer', members_names)
     if st.button('Supprimer', key='remove_member'):
-        delete_member(team_name, member_to_remove)
+        database.delete_member(team_name, member_to_remove)
         st.markdown(f'<div class="success">{member_to_remove} a été supprimé de la liste.</div>', unsafe_allow_html=True)
-        st.rerun()
+        st.experimental_rerun()
