@@ -10,7 +10,7 @@ derivatives/
 program/.ipynb_checkpoints
 program/events_data
 pptx/
-
+secrets.toml
 
 ### Ignore these files
 .DS_Store
