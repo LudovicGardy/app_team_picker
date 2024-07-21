@@ -1,7 +1,11 @@
 import numpy as np
 import os
+import toml
 from dotenv import load_dotenv, find_dotenv
 from google.oauth2 import service_account
+
+import os
+from dotenv import load_dotenv, find_dotenv
 
 def load_configurations():
     """
@@ -11,36 +15,40 @@ def load_configurations():
     dotenv_path = find_dotenv('.env')
 
     if dotenv_path:
-        # Le fichier .env existe, charger uniquement ses variables
+        # The .env file exists, load only its variables
         load_dotenv(dotenv_path)
-        # Retourne les variables chargées depuis le .env
+        # Return the variables loaded from the .env
         return {key: os.environ[key] for key in os.environ if key in open(dotenv_path).read()}
     else:
-        # Le fichier .env n'existe pas, retourne toutes les variables d'environnement du système
+        # The .env file does not exist, return all the system environment variables
         return dict(os.environ)
 
-### CONFIGURATION ###
-def page_config():
-    '''
-    Set the page configuration (title, favicon, layout, etc.)
-    '''
+def load_toml_config(file_path):
+    """
+    Charge les configurations à partir d'un fichier .toml
+    """
+    try:
+        with open(file_path, 'r') as file:
+            return toml.load(file).get('theme', {})
+    except FileNotFoundError:
+        return {}
 
+def page_config():
+    """
+    Set the page configuration (title, favicon, layout, etc.)
+    """
     env_variables = load_configurations()
+    toml_config = load_toml_config('.streamlit/config.toml')
 
     page_dict = {
-        'page_title': 'Team picker',
-        'subtitle': 'Prédictions de prix immobiliers',
-        'page_description': """
-            👑 La légende a besoin de héros pour s'écrire. Parmi les vaillants équipiers, qui sera l'élu ?
-            
-            🎲 Oracle, sois notre guide.
-            """,
+        'page_title': toml_config.get('page_title', 'Team Picker'),
+        'sidebar_title': f"# {toml_config.get('sidebar_title', 'Team Picker')}",
+        'base': toml_config.get('base', 'dark'),
+        'page_icon': "images/invivo_DF.png",
+        'page_logo': "images/invivo_DF_white.png",
+        'layout': toml_config.get('layout', 'centered'),
+        'initial_sidebar_state': toml_config.get('initial_sidebar_state', 'auto'),
         'author': 'Sotis AI',
-        'base': 'dark',
-        'page_icon': f'images/invivo_DF.png',
-        'page_logo': f'images/invivo_DF_white.png',
-        'layout': 'centered',
-        'initial_sidebar_state': 'auto',
         'markdown': '''
                     <style>
                         .css-10pw50 {
@@ -48,6 +56,11 @@ def page_config():
                         }
                     </style>
                     ''',
+        'page_description': """
+            👑 La légende a besoin de héros pour s'écrire. Parmi les vaillants équipiers, qui sera l'élu ?
+            
+            🎲 Oracle, sois notre guide.
+            """
     }
 
     return page_dict
@@ -68,7 +81,6 @@ def data_URL():
 
     return data_dict
 
-### CREDENTIALS ###
 def firebase_credentials():
     '''
     Load configuration from .env file or from OS environment variables

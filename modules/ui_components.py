@@ -16,15 +16,19 @@ def load_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-def display_sidebar(config):
+def display_sidebar(page_config):
+
+    logo_path = page_config().get('page_logo')
+    desired_width = 60
+
     col1, col2 = st.columns([1, 3])
     
     with col1:
-        st.image(str(config().get('page_logo')), width=60)
+        st.image(logo_path, width=desired_width)
     with col2:
-        st.write('# Daily Loto')
+        st.write(page_config().get('sidebar_title'))
 
-    st.caption(str(config().get('page_description')))
+    st.caption(page_config().get('page_description'))
     st.divider()
 
 def display_home_tab(team_name):
