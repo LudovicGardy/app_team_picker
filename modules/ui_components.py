@@ -33,13 +33,14 @@ def display_home_tab(team_name):
     members = load_members(team_name)
     
     active_members = []
-    with st.spinner('Chargement des membres...'):
-        for member in members:
-            is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
-            member['active'] = is_active
-            if is_active:
-                active_members.append(member['name'])
-            save_member(team_name, member)
+    with st.sidebar: ### Spinner is displayed in the sidebar
+        with st.spinner('Chargement des membres...'):
+            for member in members:
+                is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
+                member['active'] = is_active
+                if is_active:
+                    active_members.append(member['name'])
+                save_member(team_name, member)
     
     if st.button('DESIGNER UN MEMBRE'):
         if active_members:
