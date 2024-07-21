@@ -12,26 +12,23 @@ class Database:
         self.initialize_firebase(firebase_credentials)
 
     def initialize_firebase(self, credentials_func):
-        if 'database' not in st.session_state:
-            # if not firebase_admin._apps:
-            try:
-                cred = credentials_func()
-                cred = credentials.Certificate(cred)
-                app = firebase_admin.initialize_app(cred, name=self.app_uuid)
-                st.session_state['database'] = firestore.client(app=app)
-            except Exception as e:
-                print(f"Erreur lors de l'initialisation de Firebase: {e}")
-        self.db = st.session_state['database']
+        try:
+            cred = credentials_func()
+            cred = credentials.Certificate(cred)
+            app = firebase_admin.initialize_app(cred, name=self.app_uuid)
+            self.db = firestore.client(app=app)
+        except Exception as e:
+            print(f"Erreur lors de l'initialisation de Firebase: {e}")
 
     def ensure_initialized(self):
         if not hasattr(self, 'db') or self.db is None:
             raise RuntimeError("Firebase database is not initialized. Call initialize_firebase() first.")
 
     def get_team_collection(self, team_name):
-        return self.db.collection(f'teams_{self.app_uuid}').document(team_name).collection('members')
+        return self.db.collection('teams').document(team_name).collection('members') 
 
     def get_log_collection(self, team_name):
-        return self.db.collection(f'teams_{self.app_uuid}').document(team_name).collection('logs')
+        return self.db.collection('teams').document(team_name).collection('logs')
 
     def load_members(self, team_name):
         self.ensure_initialized()
