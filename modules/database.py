@@ -13,14 +13,14 @@ class Database:
 
     def initialize_firebase(self, credentials_func):
         if 'database' not in st.session_state:
-            if not firebase_admin._apps:
-                try:
-                    cred = credentials_func()
-                    cred = credentials.Certificate(cred)
-                    app = firebase_admin.initialize_app(cred, name=self.app_uuid)
-                    st.session_state['database'] = firestore.client(app=app)
-                except Exception as e:
-                    print(f"Erreur lors de l'initialisation de Firebase: {e}")
+            # if not firebase_admin._apps:
+            try:
+                cred = credentials_func()
+                cred = credentials.Certificate(cred)
+                app = firebase_admin.initialize_app(cred, name=self.app_uuid)
+                st.session_state['database'] = firestore.client(app=app)
+            except Exception as e:
+                print(f"Erreur lors de l'initialisation de Firebase: {e}")
         self.db = st.session_state['database']
 
     def ensure_initialized(self):
