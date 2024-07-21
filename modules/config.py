@@ -11,11 +11,7 @@ def check_password(st):
     def password_entered():
 
         env_variables = load_configurations()
-
-        try:
-            pw = st.secrets["password"]
-        except:
-            pw = str(env_variables.get('PASSWORD'))
+        pw = str(env_variables.get('PASSWORD'))
 
         """Checks whether a password entered by the user is correct."""
         if hmac.compare_digest(st.session_state["password"], pw):
