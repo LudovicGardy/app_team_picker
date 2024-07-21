@@ -66,10 +66,25 @@ def display_home_tab(team_name):
             phrase = random.choice(wrap_phrases).split('{}')
             database.log_result(team_name, selected_person)
     
-            with st.spinner('Tirage en cours...'):
-                time.sleep(3)
+            # with st.spinner('Tirage en cours...'):
+            #     time.sleep(3)
     
+            with st.status("Downloading data...", expanded=True) as status:
+                st.write("Recherche d'un candidat...")
+                time.sleep(2)
+                st.write("Validation du candidat...")
+                time.sleep(1)
+                st.write("Candidate trouvé !")
+                time.sleep(2)
+                status.update(label="Candidate trouvé !", state="complete", expanded=False)
+
             st.divider()
+             
+            if time.localtime().tm_mon == 12:
+                st.snow()
+            else:
+                st.balloons()
+
             st.markdown(
                 f"<h3 class='wrap_phrase'>{phrase[0]}<span class='selected_name'>{selected_person}</span>{phrase[1]}</h3>",
                 unsafe_allow_html=True
@@ -88,7 +103,7 @@ def display_add_remove_tab(team_name):
         member = {'name': new_member, 'active': True}
         database.save_member(team_name, member)
         st.markdown(f'<div class="success">{new_member} a été ajouté à la liste.</div>', unsafe_allow_html=True)
-        st.experimental_rerun()
+        st.rerun()
     
     members = database.load_members(team_name)
     members_names = [member['name'] for member in members]
@@ -97,4 +112,4 @@ def display_add_remove_tab(team_name):
     if st.button('Supprimer', key='remove_member'):
         database.delete_member(team_name, member_to_remove)
         st.markdown(f'<div class="success">{member_to_remove} a été supprimé de la liste.</div>', unsafe_allow_html=True)
-        st.experimental_rerun()
+        st.rerun()
