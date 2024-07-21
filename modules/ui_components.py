@@ -2,7 +2,7 @@ import streamlit as st
 import random
 import time
 from modules.database import load_members, save_member, delete_member, log_result
-from modules.utils import load_phrases
+from modules.utils import load_phrases, normalize_value
 
 wrap_phrases = load_phrases('config/wrap_phrases.yaml')
 
@@ -38,14 +38,20 @@ def display_home_tab(team_name):
     
     active_members = []
     with st.sidebar: ### Spinner is displayed in the sidebar
-        with st.spinner('Chargement des membres...'):
-            for member in members:
-                is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
-                member['active'] = is_active
-                if is_active:
-                    active_members.append(member['name'])
-                save_member(team_name, member)
-    
+
+        progress_text = "Operation in progress. Please wait."
+        my_bar = st.progress(0, text=progress_text)
+
+        for i, member in enumerate(members):
+            is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
+            member['active'] = is_active
+            if is_active:
+                active_members.append(member['name'])
+            save_member(team_name, member)
+            my_bar.progress(normalize_value(i+1,0,len(members)), text=progress_text)
+        my_bar.empty()
+
+
     if st.button('DESIGNER UN MEMBRE'):
         if active_members:
             selected_person = random.choice(active_members)
