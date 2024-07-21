@@ -1,9 +1,10 @@
 import streamlit as st
 from modules.config import page_config
-from modules.ui_components import init_page_config, load_css, display_sidebar, display_home_tab, display_add_remove_tab
+from modules.ui_components import init_page_config, load_css, display_sidebar, display_home_tab, display_add_remove_tab, init_session_state
 
 class App:
     def __init__(self):
+        init_session_state()
         init_page_config(page_config)
         load_css('config/styles.css')
         

@@ -3,6 +3,7 @@ from firebase_admin import firestore, credentials
 from datetime import datetime
 from modules.config import firebase_credentials
 import streamlit as st
+from datetime import datetime
 
 class Database:
 
@@ -10,16 +11,16 @@ class Database:
         self.initialize_firebase(firebase_credentials)
 
     def initialize_firebase(self, credentials_func):
-        if 'db' not in st.session_state:
+        if 'database' not in st.session_state:
             if not firebase_admin._apps:
                 try:
                     cred = credentials_func()
                     cred = credentials.Certificate(cred)
-                    firebase_admin.initialize_app(cred)
-                    st.session_state.db = firestore.client()
+                    app = firebase_admin.initialize_app(cred)#, name=datetime.now().strftime('%Y%m%d%H%M%S'))
+                    st.session_state['database'] = firestore.client(app=app)
                 except Exception as e:
                     print(f"Erreur lors de l'initialisation de Firebase: {e}")
-        self.db = st.session_state.db
+        self.db = st.session_state['database']
 
     def ensure_initialized(self):
         if not hasattr(self, 'db') or self.db is None:
@@ -44,7 +45,7 @@ class Database:
         member_ref = self.db.collection('teams').document(team_name).collection('members').document(member_name)
         member_ref.delete()
 
-    def log_result(self, team_name, name):
+    def log_result(self, team_name, name):  
         self.ensure_initialized()
         log_ref = self.db.collection('teams').document(team_name).collection('logs').document()
         log_ref.set({'name': name, 'timestamp': datetime.now()})

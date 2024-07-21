@@ -3,12 +3,9 @@ import random
 import time
 from modules.utils import load_phrases, normalize_value
 
-
-if 'database' not in st.session_state:
-    from modules.database import Database
-    st.session_state.database = Database()
-
-wrap_phrases = load_phrases('config/wrap_phrases.yaml')
+# if 'database' not in st.session_state:
+#     from modules.database import Database
+#     st.session_state.database = Database()
 
 def init_page_config(page_config): ### Must be called before any other st. function
     st.set_page_config(page_title=page_config().get('page_title'), 
@@ -20,8 +17,12 @@ def load_css(file_name):
     with open(file_name) as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True) 
 
-def display_sidebar(page_config):
+def init_session_state():
+    if 'database' not in st.session_state:
+        from modules.database import Database
+        st.session_state['database'] = Database()
 
+def display_sidebar(page_config):
     logo_path = page_config().get('page_logo')
     desired_width = 60
 
@@ -36,6 +37,8 @@ def display_sidebar(page_config):
     st.divider()
 
 def display_home_tab(team_name):
+    wrap_phrases = load_phrases('config/wrap_phrases.yaml')
+
     database = st.session_state.database
 
     st.markdown('<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True)
@@ -66,10 +69,12 @@ def display_home_tab(team_name):
             with st.spinner('Tirage en cours...'):
                 time.sleep(3)
     
+            st.divider()
             st.markdown(
                 f"<h3 class='wrap_phrase'>{phrase[0]}<span class='selected_name'>{selected_person}</span>{phrase[1]}</h3>",
                 unsafe_allow_html=True
             )
+            st.divider()
         else:
             st.markdown('<div class="error">Aucun membre actif pour le tirage !</div>', unsafe_allow_html=True)
 
