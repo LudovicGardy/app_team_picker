@@ -2,10 +2,11 @@ import streamlit as st
 import random
 import time
 from modules.utils import load_phrases, normalize_value
+from modules.database import Database
 
 # if 'database' not in st.session_state:
 #     from modules.database import Database
-#     st.session_state.database = Database()
+#     st.session_state['database'] = Database()
 
 def init_page_config(page_config): ### Must be called before any other st. function
     st.set_page_config(page_title=page_config().get('page_title'), 
@@ -18,9 +19,8 @@ def load_css(file_name):
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True) 
 
 def init_session_state():
-    if 'database' not in st.session_state:
-        from modules.database import Database
-        st.session_state['database'] = Database()
+    # if 'database' not in st.session_state:
+    st.session_state['database'] = Database()
 
 def display_sidebar(page_config):
     logo_path = page_config().get('page_logo')
@@ -39,7 +39,7 @@ def display_sidebar(page_config):
 def display_home_tab(team_name):
     wrap_phrases = load_phrases('config/wrap_phrases.yaml')
 
-    database = st.session_state.database
+    database = st.session_state['database']
 
     st.markdown('<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True)
     
@@ -94,7 +94,7 @@ def display_home_tab(team_name):
             st.markdown('<div class="error">Aucun membre actif pour le tirage !</div>', unsafe_allow_html=True)
 
 def display_add_remove_tab(team_name):
-    database = st.session_state.database
+    database = st.session_state['database']
 
     st.markdown('<div class="header">Ajouter un Membre</div>', unsafe_allow_html=True)
     
