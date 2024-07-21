@@ -40,7 +40,7 @@ def display_home_tab(team_name):
     with st.sidebar: ### Spinner is displayed in the sidebar
 
         progress_text = "Operation in progress. Please wait."
-        my_bar = st.progress(0, text=progress_text)
+        progress_bar = st.progress(0, text=progress_text)
 
         for i, member in enumerate(members):
             is_active = st.sidebar.toggle(member['name'], value=member['active'], key=member['name'] + team_name)
@@ -48,8 +48,8 @@ def display_home_tab(team_name):
             if is_active:
                 active_members.append(member['name'])
             save_member(team_name, member)
-            my_bar.progress(normalize_value(i+1,0,len(members)), text=progress_text)
-        my_bar.empty()
+            progress_bar.progress(normalize_value(i+1,0,len(members)), text=progress_text)
+        progress_bar.empty()
 
 
     if st.button('DESIGNER UN MEMBRE'):
