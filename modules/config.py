@@ -4,9 +4,6 @@ import toml
 from dotenv import load_dotenv, find_dotenv
 from google.oauth2 import service_account
 
-import os
-from dotenv import load_dotenv, find_dotenv
-
 def load_configurations():
     """
     Charge uniquement les variables du fichier .env si celui-ci est présent.
