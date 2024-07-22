@@ -1,8 +1,8 @@
 import numpy as np
+from typing import Any
 import os
 import toml
 from dotenv import load_dotenv, find_dotenv
-from google.oauth2 import service_account
 import hmac
 
 def check_password(st):
@@ -56,13 +56,13 @@ def load_toml_config(file_path):
         with open(file_path, 'r') as file:
             return toml.load(file).get('theme', {})
     except FileNotFoundError:
-        return {}
+        raise FileNotFoundError("config.toml file not found")
 
-def page_config():
+def page_config() -> dict[str, Any]:
     """
     Set the page configuration (title, favicon, layout, etc.)
     """
-    env_variables = load_configurations()
+
     toml_config = load_toml_config('.streamlit/config.toml')
 
     page_dict = {
@@ -132,69 +132,7 @@ def firebase_credentials():
         # Add prefix and suffix for the private_key
         cred_dict['private_key'] = cred_dict["private_key"].replace("/breakline/", "\n")
     except ValueError as e:
-        print(f'Configuration error: {e}')
         cred_dict = {}  # Reset cred_dict if any key is missing or empty
-
-    return cred_dict
-
-def bigquery_credentials():
-    env_variables = load_configurations()
-
-    # Configuration de l'authentification avec variables d'environnement
-    credentials_dict = {
-        "type": env_variables.get('BIGQUERY_TYPE'),
-        "project_id": env_variables.get('BIGQUERY_PROJECT_ID'),
-        "private_key_id": env_variables.get('BIGQUERY_PRIVATE_KEY_ID'),
-        "private_key": env_variables.get('BIGQUERY_PRIVATE_KEY').replace("/breakline/", "\n"),
-        "client_email": env_variables.get('BIGQUERY_CLIENT_EMAIL'),
-        "client_id": env_variables.get('BIGQUERY_CLIENT_ID'),
-        "auth_uri": env_variables.get('BIGQUERY_AUTH_URI'),
-        "token_uri": env_variables.get('BIGQUERY_TOKEN_URI'),
-        "auth_provider_x509_cert_url": env_variables.get('ABIGQUERY_UTH_PROVIDER_X509_CERT_URL'),
-        "client_x509_cert_url": env_variables.get('BIGQUERY_CLIENT_X509_CERT_URL')
-    }
-
-    return credentials_dict
-
-def azure_credentials():
-
-    keys_list = [
-        'AZURE_SERVER', 'AZURE_DATABASE', 'AZURE_UID', 'AZURE_PWD', 'AZURE_TABLE'
-    ]
-
-    cred_dict = {}
-    env_variables = load_configurations()
-
-    # Check if all required keys exist and have a non-empty value
-    try:
-        for key in keys_list:
-            value = env_variables.get(key.upper())
-            if not value:
-                raise ValueError(f'Missing or empty value for key: {key}')
-            cred_dict[key] = value
-    except ValueError as e:
-        print(f'Configuration error: {e}')
-        cred_dict = {}  # Reset cred_dict if any key is missing or empty
-
-    return cred_dict
-
-def AWS_credentials():
-    keys_list = [
-        'AWS_S3_URL'
-    ]
-
-    cred_dict = {}
-    env_variables = load_configurations()
-
-    # Check if all required keys exist and have a non-empty value
-    try:
-        for key in keys_list:
-            value = env_variables.get(key.upper())
-            if not value:
-                raise ValueError(f'Missing or empty value for key: {key}')
-            cred_dict[key] = value
-    except ValueError as e:
-        print(f'Configuration error: {e}')
-        cred_dict = {}  # Reset cred_dict if any key is missing or empty
+        raise ValueError(f'Firebase credentials are missing or incomplete: check the .env file... {e}')
 
     return cred_dict

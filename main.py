@@ -7,7 +7,11 @@ class App:
 
         init_session_state()
         init_page_config(page_config)
-        load_css('config/styles.css')
+
+        try:
+            load_css('config/styles.css')
+        except FileNotFoundError:
+            raise FileNotFoundError("styles.css file not found")
         
         st.markdown('<div class="main-title">Réunion de la Table Ovale</div>', unsafe_allow_html=True)
 
@@ -23,8 +27,8 @@ class App:
     def accueil(self):
 
         team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_test"])
-        
-        home = Home(team_name)
+
+        home = Home(str(team_name))
 
     def maite(self):
 
@@ -33,7 +37,7 @@ class App:
 
         team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_build", "team_deploy"])
 
-        home = Home(team_name)
+        home = Home(str(team_name))
 
     
 if __name__ == '__main__':

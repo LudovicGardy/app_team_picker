@@ -5,7 +5,10 @@ from modules.utils import load_phrases, normalize_value
 
 class Home:
 
-    def __init__(self, team_name):
+    def __init__(self, team_name:str):
+        assert isinstance(team_name, str), "team_name must be a string"
+        assert team_name.strip(), "team_name must not be empty"
+
         self.team_name = team_name
 
         tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
@@ -17,16 +20,23 @@ class Home:
             self.display_add_remove_tab()
 
     def display_home_tab(self):
-        wrap_phrases = load_phrases('config/wrap_phrases.yaml')
 
-        database = st.session_state['database']
+        try:
+            wrap_phrases = load_phrases('config/wrap_phrases.yaml')
+        except FileNotFoundError:
+            raise FileNotFoundError("wrap_phrases.yaml file not found")
+
+        try:
+            database = st.session_state['database']
+        except KeyError:
+            raise KeyError("database object not found in session state")
 
         st.markdown('<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True)
         
         members = database.load_members(self.team_name)
         
         active_members = []
-        with st.sidebar: ### Spinner is displayed in the sidebar
+        with st.sidebar:
 
             progress_text = "Operation in progress. Please wait."
             progress_bar = st.progress(0, text=progress_text)
@@ -45,9 +55,6 @@ class Home:
                 selected_person = random.choice(active_members)
                 phrase = random.choice(wrap_phrases).split('{}')
                 database.log_result(self.team_name, selected_person)
-        
-                # with st.spinner('Tirage en cours...'):
-                #     time.sleep(3)
         
                 with st.status("Chargement...", expanded=True) as status:
                     st.write("Recherche d'un candidat...")
@@ -74,7 +81,11 @@ class Home:
                 st.markdown('<div class="error">Aucun membre actif pour le tirage !</div>', unsafe_allow_html=True)
 
     def display_add_remove_tab(self):
-        database = st.session_state['database']
+
+        try:
+            database = st.session_state['database']
+        except KeyError:
+            raise KeyError("database object not found in session state")
 
         st.markdown('<div class="header">Ajouter un Membre</div>', unsafe_allow_html=True)
         
