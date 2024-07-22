@@ -1,8 +1,7 @@
 import streamlit as st
 from modules.config import page_config, check_password
-from modules.ui_components import init_page_config, load_css, display_sidebar, display_home_tab, display_add_remove_tab, init_session_state
-import hmac
-
+from modules.GUI.ui_components import init_page_config, load_css, display_sidebar, init_session_state
+from modules.GUI.home import Home
 class App:
     def __init__(self):
 
@@ -24,14 +23,8 @@ class App:
     def accueil(self):
 
         team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_test"])
-
-        tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
-
-        with tabs[0]:
-            display_home_tab(team_name)
-
-        with tabs[1]:
-            display_add_remove_tab(team_name)
+        
+        home = Home(team_name)
 
     def maite(self):
 
@@ -40,13 +33,7 @@ class App:
 
         team_name = st.sidebar.selectbox("Sélectionner une équipe", ["team_build", "team_deploy"])
 
-        tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
-
-        with tabs[0]:
-            display_home_tab(team_name)
-
-        with tabs[1]:
-            display_add_remove_tab(team_name)
+        home = Home(team_name)
 
     
 if __name__ == '__main__':
