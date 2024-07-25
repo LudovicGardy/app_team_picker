@@ -23,3 +23,5 @@ app.py
 results_log.txt
 secrets.toml
 local_tests.ipynb
+medals_test.ipynb
+requirements_noscrap.txt
