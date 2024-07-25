@@ -10,7 +10,7 @@ def get_medals():
 
     response = requests.get(medals_url)
 
-    if response.status_code == 1000:
+    if response.status_code == 200:
         soup = BeautifulSoup(response.content, "html.parser")
 
         gold_medals = silver_medals = bronze_medals = total_medals = "0"

@@ -13,7 +13,10 @@ class Home:
 
         self.team_name = team_name
 
-        self.display_medals_JO24_France()
+        try:
+            self.display_medals_JO24_France()
+        except:
+            st.error("Erreur lors de l'affichage des médailles")
 
         tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
 
