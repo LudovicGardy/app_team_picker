@@ -13,7 +13,16 @@ class Home:
 
         self.team_name = team_name
 
-        tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
+        tabs = st.tabs(
+            [
+                "Accueil",
+                "Ajouter/Supprimer un membre",
+                "Signlaer un blocage / une update",
+            ]
+        )
+
+        self.display_members_alerts()
+        self.display_members()
 
         with tabs[0]:
             self.display_home_tab()
@@ -21,24 +30,18 @@ class Home:
         with tabs[1]:
             self.display_add_remove_tab()
 
-    def display_home_tab(self):
-        try:
-            wrap_phrases = load_phrases("config/wrap_phrases.yaml")
-        except FileNotFoundError:
-            raise FileNotFoundError("wrap_phrases.yaml file not found")
+        with tabs[2]:
+            self.display_blocage_tab()
 
+    def display_members(self):
         try:
-            database = st.session_state["database"]
+            self.database = st.session_state["database"]
         except KeyError:
             raise KeyError("database object not found in session state")
 
-        st.markdown(
-            '<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True
-        )
+        members = self.database.load_members(self.team_name)
 
-        members = database.load_members(self.team_name)
-
-        active_members = []
+        self.active_members = []
         with st.sidebar:
             progress_text = "Operation in progress. Please wait."
             progress_bar = st.progress(0, text=progress_text)
@@ -51,18 +54,66 @@ class Home:
                 )
                 member["active"] = is_active
                 if is_active:
-                    active_members.append(member["name"])
-                database.save_member(self.team_name, member)
+                    self.active_members.append(member["name"])
+                self.database.save_member(self.team_name, member)
+
                 progress_bar.progress(
                     normalize_value(i + 1, 0, len(members)), text=progress_text
                 )
             progress_bar.empty()
 
+    def display_members_alerts(self):
+        members_alerts = {"blocage": [], "update": []}
+
+        try:
+            self.database = st.session_state["database"]
+        except KeyError:
+            raise KeyError("database object not found in session state")
+
+        members = self.database.load_members(self.team_name)
+
+        for member in members:
+            with st.sidebar:
+                try:
+                    if member["active"] and member["is_blocked"]:
+                        members_alerts["blocage"].append(member["name"])
+                except:
+                    pass
+
+                try:
+                    if member["active"] and member["is_update"]:
+                        members_alerts["update"].append(member["name"])
+                except:
+                    pass
+
+        if members_alerts["blocage"]:
+            for member in members_alerts["blocage"]:
+                st.sidebar.warning(f"⚠️ {member}")
+
+        if members_alerts["update"]:
+            for member in members_alerts["update"]:
+                st.sidebar.info(f"ℹ️ {member}")
+
+        if not members_alerts["blocage"] and not members_alerts["update"]:
+            st.sidebar.success("Aucun blocage ou update signalé")
+
+        st.sidebar.divider()
+
+    def display_home_tab(self):
+        try:
+            wrap_phrases = load_phrases("config/wrap_phrases.yaml")
+        except FileNotFoundError:
+            raise FileNotFoundError("wrap_phrases.yaml file not found")
+
+        st.markdown(
+            '<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True
+        )
+
         if st.button("DESIGNER UN MEMBRE"):
-            if active_members:
-                selected_person = random.choice(active_members)
+            if self.active_members:
+                selected_person = random.choice(self.active_members)
                 phrase = random.choice(wrap_phrases).split("{}")
-                database.log_result(self.team_name, selected_person)
+                self.database.log_result(self.team_name, selected_person)
 
                 with st.status("Chargement...", expanded=True) as status:
                     st.write("Recherche d'un candidat...")
@@ -128,3 +179,64 @@ class Home:
                 unsafe_allow_html=True,
             )
             st.rerun()
+
+    def display_blocage_tab(self):
+        try:
+            database = st.session_state["database"]
+        except KeyError:
+            raise KeyError("database object not found in session state")
+
+        st.markdown(
+            '<div class="header">Signaler un Blocage ou une Update</div>',
+            unsafe_allow_html=True,
+        )
+
+        members = database.load_members(self.team_name)
+        members_names = [member["name"] for member in members]
+
+        selected_member = st.selectbox("Sélectionner un membre", members_names)
+
+        col1, col2, col3 = st.columns(3)
+
+        with col1:
+            if st.button("⚠️ Signaler un blocage"):
+                member = next(
+                    (m for m in members if m["name"] == selected_member), None
+                )
+                if member:
+                    member["is_blocked"] = True
+                    database.save_member(self.team_name, member)
+                    st.markdown(
+                        f'<div class="success">{selected_member} a signalé un blocage.</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.rerun()
+
+        with col2:
+            if st.button("ℹ️ Signaler une update"):
+                member = next(
+                    (m for m in members if m["name"] == selected_member), None
+                )
+                if member:
+                    member["is_update"] = True
+                    database.save_member(self.team_name, member)
+                    st.markdown(
+                        f'<div class="success">{selected_member} a signalé une update.</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.rerun()
+
+        with col3:
+            if st.button("❎ Reset member state"):
+                member = next(
+                    (m for m in members if m["name"] == selected_member), None
+                )
+                if member:
+                    member["is_blocked"] = False
+                    member["is_update"] = False
+                    database.save_member(self.team_name, member)
+                    st.markdown(
+                        f'<div class="success">{selected_member} a été réinitialisé.</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.rerun()
