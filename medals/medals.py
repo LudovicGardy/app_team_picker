@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 from modules.config import load_configurations
 
 
-def get_medals():
+def get_medals(country):
     env_variables = load_configurations()
     medals_url = str(env_variables.get("MEDALS_URL"))
 

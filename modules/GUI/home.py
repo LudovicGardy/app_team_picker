@@ -13,11 +13,6 @@ class Home:
 
         self.team_name = team_name
 
-        try:
-            self.display_medals_JO24_France()
-        except:
-            st.error("Erreur lors de l'affichage des médailles")
-
         tabs = st.tabs(["Accueil", "Ajouter/Supprimer un membre"])
 
         with tabs[0]:
@@ -133,50 +128,3 @@ class Home:
                 unsafe_allow_html=True,
             )
             st.rerun()
-
-    def display_medals_JO24_France(self):
-        from medals.medals import get_medals
-
-        with st.container(border=True):
-            medals = get_medals()
-
-            st.markdown("Suivi des médailles en direct")
-
-            col1, col2, col3, col4 = st.columns(4)
-
-            col1.markdown(
-                f"""
-                <div style="background-color: #FFD700; padding: 10px; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <h4 style="margin: 0; color: white;">🥇 Or</h4>
-                    <p style="margin: 0; font-size: 24px; color: white;">{medals['gold_medals']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            col2.markdown(
-                f"""
-                <div style="background-color: #C0C0C0; padding: 10px; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <h4 style="margin: 0; color: white;">🥈 Argent</h4>
-                    <p style="margin: 0; font-size: 24px; color: white;">{medals['silver_medals']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            col3.markdown(
-                f"""
-                <div style="background-color: #CD7F32; padding: 10px; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <h4 style="margin: 0; color: white;">🥉 Bronze</h4>
-                    <p style="margin: 0; font-size: 24px; color: white;">{medals['bronze_medals']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-            col4.markdown(
-                f"""
-                <div style="padding: 10px; border: 2px solid #DDD; border-radius: 5px; text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                    <h4 style="margin: 0; color: white;">Total</h4>
-                    <p style="margin: 0; font-size: 24px; color: white;">{medals['total_medals']}</p>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
