@@ -22,12 +22,12 @@ class App:
         except FileNotFoundError:
             raise FileNotFoundError("styles.css file not found")
 
-        try:
-            with st.container(border=True):
-                self.display_medals_JO24()
-        except Exception as e:
-            print(e)
-            st.error("Erreur lors de l'affichage des médailles")
+        # try:
+        #     with st.container(border=True):
+        #         self.display_medals_JO24()
+        # except Exception as e:
+        #     print(e)
+        #     st.error("Erreur lors de l'affichage des médailles")
 
         st.markdown(
             '<div class="main-title">Réunion de la Table Ovale</div>',

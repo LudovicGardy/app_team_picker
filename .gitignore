@@ -25,3 +25,4 @@ secrets.toml
 local_tests.ipynb
 medals_test.ipynb
 requirements_noscrap.txt
+test.html
