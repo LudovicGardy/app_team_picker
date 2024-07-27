@@ -109,7 +109,7 @@ class Home:
             '<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True
         )
 
-        if st.button("▶️ DESIGNER UN MEMBRE ◀️"):
+        if st.button("DESIGNER UN MEMBRE 🙋"):
             if self.active_members:
                 selected_person = random.choice(self.active_members)
                 phrase = random.choice(wrap_phrases).split("{}")
