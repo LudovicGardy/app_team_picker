@@ -17,7 +17,7 @@ class Home:
             [
                 "Accueil",
                 "Ajouter/Supprimer un membre",
-                "Signlaer un blocage / une update",
+                "Signaler un blocage / une update",
             ]
         )
 
@@ -227,7 +227,7 @@ class Home:
                     st.rerun()
 
         with col3:
-            if st.button("❎ Reset member state"):
+            if st.button("❎ Réinitialiser mes alertes"):
                 member = next(
                     (m for m in members if m["name"] == selected_member), None
                 )
