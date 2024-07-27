@@ -92,10 +92,10 @@ class Home:
 
         if members_alerts["update"]:
             for member in members_alerts["update"]:
-                st.sidebar.info(f"🆕 {member}")
+                st.sidebar.success(f"❇️ {member}")
 
         if not members_alerts["blocage"] and not members_alerts["update"]:
-            st.sidebar.success("Aucun blocage ou update signalé")
+            st.sidebar.info("Aucun blocage ou update signalé")
 
         st.sidebar.divider()
 
@@ -219,7 +219,7 @@ class Home:
                     st.rerun()
 
         with col3:
-            if st.button("❎ Réinitialiser mes alertes"):
+            if st.button("🗑️ Réinitialiser mes alertes"):
                 member = next(
                     (m for m in members if m["name"] == selected_member), None
                 )
