@@ -15,9 +15,9 @@ class Home:
 
         tabs = st.tabs(
             [
-                "Accueil",
-                "Ajouter/Supprimer un membre",
-                "Signaler un blocage / une update",
+                "🎲 Sélectionner un candidat",
+                "🚸 Ajouter / Supprimer un membre",
+                "ℹ️ Signaler un blocage / une update",
             ]
         )
 
@@ -92,7 +92,7 @@ class Home:
 
         if members_alerts["update"]:
             for member in members_alerts["update"]:
-                st.sidebar.info(f"ℹ️ {member}")
+                st.sidebar.info(f"🆕 {member}")
 
         if not members_alerts["blocage"] and not members_alerts["update"]:
             st.sidebar.success("Aucun blocage ou update signalé")
@@ -120,10 +120,10 @@ class Home:
                     time.sleep(2)
                     st.write("Validation du candidat...")
                     time.sleep(1)
-                    st.write("Candidate trouvé !")
+                    st.write("Candidat trouvé !")
                     time.sleep(2)
                     status.update(
-                        label="Candidate trouvé !", state="complete", expanded=False
+                        label="Candidat trouvé !", state="complete", expanded=False
                     )
 
                 st.divider()
@@ -164,6 +164,8 @@ class Home:
             )
             st.rerun()
 
+        st.divider()
+
         members = database.load_members(self.team_name)
         members_names = [member["name"] for member in members]
         st.markdown(
@@ -187,14 +189,14 @@ class Home:
             raise KeyError("database object not found in session state")
 
         st.markdown(
-            '<div class="header">Signaler un Blocage ou une Update</div>',
+            '<div class="header">Signaler un blocage ou une update</div>',
             unsafe_allow_html=True,
         )
 
         members = database.load_members(self.team_name)
         members_names = [member["name"] for member in members]
 
-        selected_member = st.selectbox("Sélectionner un membre", members_names)
+        selected_member = st.selectbox("", members_names)
 
         col1, col2, col3 = st.columns(3)
 
@@ -213,7 +215,7 @@ class Home:
                     st.rerun()
 
         with col2:
-            if st.button("ℹ️ Signaler une update"):
+            if st.button("🆕 Signaler une update"):
                 member = next(
                     (m for m in members if m["name"] == selected_member), None
                 )
