@@ -30,7 +30,7 @@ class App:
         #     st.error("Erreur lors de l'affichage des médailles")
 
         st.markdown(
-            '<div class="main-title">Réunion de la Table Ovale</div>',
+            '<div class="main-title"><h1>Réunion de la Table Ovale</h1></div>',
             unsafe_allow_html=True,
         )
 

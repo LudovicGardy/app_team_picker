@@ -109,7 +109,7 @@ class Home:
             '<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True
         )
 
-        if st.button("DESIGNER UN MEMBRE"):
+        if st.button("▶️ DESIGNER UN MEMBRE ◀️"):
             if self.active_members:
                 selected_person = random.choice(self.active_members)
                 phrase = random.choice(wrap_phrases).split("{}")
@@ -151,17 +151,13 @@ class Home:
             raise KeyError("database object not found in session state")
 
         st.markdown(
-            '<div class="header">Ajouter un Membre</div>', unsafe_allow_html=True
+            '<div class="header"> Ajouter un membre</div>', unsafe_allow_html=True
         )
 
-        new_member = st.text_input("Saisir le nom du membre")
-        if st.button("Ajouter", key="add_member"):
-            member = {"name": new_member, "active": True}
+        new_member = st.text_input(" ")
+        if st.button("❎ Ajouter", key="add_member"):
+            member = {"name": new_member.capitalize(), "active": True}
             database.save_member(self.team_name, member)
-            st.markdown(
-                f'<div class="success">{new_member} a été ajouté à la liste.</div>',
-                unsafe_allow_html=True,
-            )
             st.rerun()
 
         st.divider()
@@ -169,17 +165,11 @@ class Home:
         members = database.load_members(self.team_name)
         members_names = [member["name"] for member in members]
         st.markdown(
-            '<div class="header">Supprimer un Membre</div>', unsafe_allow_html=True
+            '<div class="header">Supprimer un membre</div>', unsafe_allow_html=True
         )
-        member_to_remove = st.selectbox(
-            "Sélectionner un membre à supprimer", members_names
-        )
-        if st.button("Supprimer", key="remove_member"):
+        member_to_remove = st.selectbox(" ", members_names)
+        if st.button("❌ Supprimer", key="remove_member"):
             database.delete_member(self.team_name, member_to_remove)
-            st.markdown(
-                f'<div class="success">{member_to_remove} a été supprimé de la liste.</div>',
-                unsafe_allow_html=True,
-            )
             st.rerun()
 
     def display_blocage_tab(self):
