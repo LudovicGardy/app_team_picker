@@ -1,5 +1,6 @@
 import random
 import time
+from datetime import datetime
 
 import streamlit as st
 
@@ -105,44 +106,65 @@ class Home:
         except FileNotFoundError:
             raise FileNotFoundError("wrap_phrases.yaml file not found")
 
-        st.markdown(
-            '<div class="header">A l\'ordre du jour...</div>', unsafe_allow_html=True
-        )
+        self.display_logs()
 
-        if st.button("**DESIGNER UN MEMBRE** 🙋"):
-            if self.active_members:
-                selected_person = random.choice(self.active_members)
-                phrase = random.choice(wrap_phrases).split("{}")
-                self.database.log_result(self.team_name, selected_person)
+        with st.container(border=True):
+            st.markdown(
+                '<div class="header">A l\'ordre du jour...</div>',
+                unsafe_allow_html=True,
+            )
 
-                with st.status("Chargement...", expanded=True) as status:
-                    st.write("Recherche d'un candidat...")
-                    time.sleep(2)
-                    st.write("Validation du candidat...")
-                    time.sleep(1)
-                    st.write("Candidat trouvé !")
-                    time.sleep(2)
-                    status.update(
-                        label="Candidat trouvé !", state="complete", expanded=False
+            if st.button("**DESIGNER UN MEMBRE** 🙋"):
+                if self.active_members:
+                    selected_person = random.choice(self.active_members)
+                    phrase = random.choice(wrap_phrases).split("{}")
+                    self.database.log_result(self.team_name, selected_person)
+
+                    with st.status("Chargement...", expanded=True) as status:
+                        st.write("Recherche d'un candidat...")
+                        time.sleep(2)
+                        st.write("Validation du candidat...")
+                        time.sleep(1)
+                        st.write("Candidat trouvé !")
+                        time.sleep(2)
+                        status.update(
+                            label="Candidat trouvé !", state="complete", expanded=False
+                        )
+
+                    st.divider()
+
+                    if time.localtime().tm_mon == 12:
+                        st.snow()
+                    else:
+                        st.balloons()
+
+                    st.markdown(
+                        f"<h4 class='wrap_phrase'>{phrase[0]}<span class='selected_name'>{selected_person}</span>{phrase[1]}</h4>",
+                        unsafe_allow_html=True,
                     )
 
-                st.divider()
+                    st.divider()
 
-                if time.localtime().tm_mon == 12:
-                    st.snow()
                 else:
-                    st.balloons()
+                    st.markdown(
+                        '<div class="error">Aucun membre actif pour le tirage !</div>',
+                        unsafe_allow_html=True,
+                    )
 
-                st.markdown(
-                    f"<h4 class='wrap_phrase'>{phrase[0]}<span class='selected_name'>{selected_person}</span>{phrase[1]}</h4>",
-                    unsafe_allow_html=True,
-                )
-                st.divider()
+    def display_logs(self):
+        with st.expander("🗃️ Consulter l'historique"):
+            logs = self.database.load_logs(self.team_name)
+            if logs:
+                for log in logs:
+                    log = f"{log['name']} - {log['timestamp']}"
+                    name, timestamp = log.split(" - ")
+                    timestamp = datetime.fromisoformat(timestamp)
+
+                    formatted_timestamp = timestamp.strftime("%d %B %Y, %H:%M:%S")
+                    readable_log = f"{formatted_timestamp}: {name}"
+                    st.write(f"- {readable_log}")
             else:
-                st.markdown(
-                    '<div class="error">Aucun membre actif pour le tirage !</div>',
-                    unsafe_allow_html=True,
-                )
+                st.write("Aucune sélection enregistrée")
 
     def display_add_remove_tab(self):
         try:

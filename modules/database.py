@@ -57,3 +57,12 @@ class Database:
         self.ensure_initialized()
         log_ref = self.get_log_collection(team_name).document()
         log_ref.set({"name": name, "timestamp": datetime.now()})
+
+    def load_logs(self, team_name: str) -> list[dict]:
+        self.ensure_initialized()
+        logs_ref = self.get_log_collection(team_name)
+        logs = []
+        docs = logs_ref.stream()
+        for doc in docs:
+            logs.append(doc.to_dict())
+        return logs
