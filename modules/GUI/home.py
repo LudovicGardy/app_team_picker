@@ -27,6 +27,7 @@ class Home:
 
         with tabs[0]:
             self.display_home_tab()
+            self.display_logs()
 
         with tabs[1]:
             self.display_add_remove_tab()
@@ -106,8 +107,6 @@ class Home:
         except FileNotFoundError:
             raise FileNotFoundError("wrap_phrases.yaml file not found")
 
-        self.display_logs()
-
         with st.container(border=True):
             st.markdown(
                 '<div class="header">A l\'ordre du jour...</div>',
@@ -164,7 +163,7 @@ class Home:
                     readable_log = f"{formatted_timestamp}: {name}"
                     st.write(f"- {readable_log}")
             else:
-                st.write("Aucune sélection enregistrée")
+                st.write("Aucun historique disponible")
 
     def display_add_remove_tab(self):
         try:
