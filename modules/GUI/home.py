@@ -18,7 +18,7 @@ class Home:
             [
                 "🎲 Sélectionner un candidat",
                 "🚸 Ajouter / Supprimer un membre",
-                "ℹ️ Signaler un blocage / une update",
+                "🔴 Signaler un blocage / une update",
             ]
         )
 
@@ -113,7 +113,7 @@ class Home:
                 unsafe_allow_html=True,
             )
 
-            if st.button("**DESIGNER UN MEMBRE** 🙋"):
+            if st.button("**▶ DESIGNER UN MEMBRE**"):
                 if self.active_members:
                     selected_person = random.choice(self.active_members)
                     phrase = random.choice(wrap_phrases).split("{}")
