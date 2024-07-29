@@ -172,7 +172,8 @@ class Home:
             raise KeyError("database object not found in session state")
 
         st.markdown(
-            '<div class="header"> Ajouter un membre</div>', unsafe_allow_html=True
+            '<div class="header"> Ajouter un membre à la base de données</div>',
+            unsafe_allow_html=True,
         )
 
         new_member = st.text_input(" ")
@@ -186,7 +187,8 @@ class Home:
         members = database.load_members(self.team_name)
         members_names = [member["name"] for member in members]
         st.markdown(
-            '<div class="header">Supprimer un membre</div>', unsafe_allow_html=True
+            '<div class="header">Supprimer un membre de la base de données</div>',
+            unsafe_allow_html=True,
         )
         member_to_remove = st.selectbox(" ", members_names)
         if st.button("❌ Supprimer", key="remove_member"):
