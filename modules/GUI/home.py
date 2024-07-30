@@ -115,17 +115,20 @@ class Home:
 
             if st.button("**▶ DESIGNER UN MEMBRE**"):
                 if self.active_members:
-                    selected_person = random.choice(self.active_members)
+                    selected_person, selected_backup1, selected_backup2 = random.sample(
+                        self.active_members, 3
+                    )
+
                     phrase = random.choice(wrap_phrases).split("{}")
                     self.database.log_result(self.team_name, selected_person)
 
                     with st.status("Chargement...", expanded=True) as status:
                         st.write("Recherche d'un candidat...")
-                        time.sleep(2)
+                        time.sleep(0)
                         st.write("Validation du candidat...")
-                        time.sleep(1)
+                        time.sleep(0)
                         st.write("Candidat trouvé !")
-                        time.sleep(2)
+                        time.sleep(0)
                         status.update(
                             label="Candidat trouvé !", state="complete", expanded=False
                         )
@@ -143,6 +146,10 @@ class Home:
                     )
 
                     st.divider()
+
+                    st.caption(
+                        f"""Bonjour {selected_backup1} et {selected_backup2}! Vous êtes les backups de {selected_person}."""
+                    )
 
                 else:
                     st.markdown(
