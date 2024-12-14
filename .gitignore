@@ -1,4 +1,4 @@
-### Ignore these folders
+# Ignore these folders
 __pycache__/
 .mypy_cache/
 .venv/
@@ -11,7 +11,7 @@ program/.ipynb_checkpoints
 program/events_data
 pptx/
 
-### Ignore these files
+# Ignore these files
 .DS_Store
 .env
 Shared_scripts.pyproj
@@ -25,4 +25,9 @@ secrets.toml
 local_tests.ipynb
 medals_test.ipynb
 requirements_noscrap.txt
+
+# Tests and coverage
+.coverage*
+coverage.xml
+junit.xml
 test.html
