@@ -8,7 +8,7 @@
 
 Here's a tool that allows you to manage team members, add or remove members, and perform a random selection with a fun twist. Ideal for teams who want to add an element of surprise and fairness to their processes.
 
-🌐 Access the app and start your random selection now at [https://teampicker.sotisanalytics.com](https://teampicker.sotisanalytics.com).
+🌐 Access the app and start your random selection now at [https://teampicker.sotisai.com](https://teampicker.sotisai.com).
 
 ![Image1](images/image1.png)
 
