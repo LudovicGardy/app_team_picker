@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "app-team-picker"
+version = "0.1.0"
+description = ""
+authors = ["Ludovic Gardy <ludovic.gardy@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+streamlit = "^1.43.1"
+dotenv = "^0.9.9"
+pyyaml = "^6.0.2"
+firebase-admin = "^6.6.0"
+google-cloud-firestore = "^2.20.1"
+grpcio = "^1.70.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
