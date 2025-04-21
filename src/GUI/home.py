@@ -4,7 +4,7 @@ from datetime import datetime
 
 import streamlit as st
 
-from modules.utils import load_phrases, normalize_value
+from src.utils import load_phrases, normalize_value
 
 
 class Home:

@@ -1,9 +1,9 @@
 import pandas as pd
 import streamlit as st
 
-from modules.config import check_password, page_config
-from modules.GUI.home import Home
-from modules.GUI.ui_components import (
+from src.config import check_password, page_config
+from src.GUI.home import Home
+from src.GUI.ui_components import (
     display_sidebar,
     init_page_config,
     init_session_state,

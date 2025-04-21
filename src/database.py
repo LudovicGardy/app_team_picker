@@ -5,7 +5,7 @@ from typing import Callable
 import firebase_admin
 from firebase_admin import credentials, firestore
 
-from modules.config import firebase_credentials
+from src.config import firebase_credentials
 
 
 class Database:

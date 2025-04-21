@@ -1,7 +1,7 @@
 import unittest
 from unittest.mock import patch, mock_open
 import yaml
-from modules.utils import load_phrases, normalize_value
+from src.utils import load_phrases, normalize_value
 
 class TestUtils(unittest.TestCase):
 

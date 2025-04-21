@@ -2,7 +2,7 @@ from typing import Any, Callable
 
 import streamlit as st
 
-from modules.database import Database
+from src.database import Database
 
 
 def init_page_config(

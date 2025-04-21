@@ -1,11 +1,11 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from modules.database import Database
+from src.database import Database
 from datetime import datetime
 
 @pytest.fixture
 def mock_firebase_credentials():
-    with patch("modules.config.firebase_credentials") as mock_creds:
+    with patch("src.config.firebase_credentials") as mock_creds:
         yield mock_creds
 
 @pytest.fixture
