@@ -1,22 +1,16 @@
-[tool.poetry]
+[project]
 name = "app-team-picker"
 version = "0.1.0"
-description = ""
-authors = ["Ludovic Gardy <ludovic.gardy@gmail.com>"]
+description = "Add your description here"
 readme = "README.md"
-
-[tool.poetry.dependencies]
-python = "^3.13"
-streamlit = "^1.43.1"
-dotenv = "^0.9.9"
-pyyaml = "^6.0.2"
-google-cloud-firestore = "^2.20.1"
-firebase-admin = "^6.6.0"
-grpcio = "^1.70.0"
-google-cloud-core = "^2.4.2"
-proto-plus = "^1.26.0"
-
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires-python = ">=3.13"
+dependencies = [
+    "firebase-admin>=6.7.0",
+    "google-cloud-core>=2.4.3",
+    "google-cloud-firestore>=2.20.2",
+    "grpcio>=1.71.0",
+    "proto-plus>=1.26.1",
+    "python-dotenv>=1.1.0",
+    "pyyaml>=6.0.2",
+    "streamlit>=1.44.1",
+]
