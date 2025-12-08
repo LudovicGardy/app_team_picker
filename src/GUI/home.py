@@ -179,7 +179,13 @@ class Home:
         with st.expander("🗃️ Consulter l'historique"):
             logs = self.database.load_logs(self.team_name)
             if logs:
-                for log in logs:
+                sorted_logs = sorted(
+                    logs,
+                    key=lambda x: datetime.fromisoformat(str(x['timestamp'])),
+                    reverse=True
+                )
+                
+                for log in sorted_logs:
                     log = f"{log['name']} - {log['timestamp']}"
                     name, timestamp = log.split(" - ")
                     timestamp = datetime.fromisoformat(timestamp)
