@@ -115,9 +115,27 @@ class Home:
 
             if st.button("**▶ DESIGNER UN MEMBRE**"):
                 if self.active_members:
-                    selected_person, selected_backup1, selected_backup2 = random.sample(
-                        self.active_members, 3
-                    )
+                    # Charger tous les membres pour obtenir leurs timestamps
+                    all_members = self.database.load_members(self.team_name)
+                    active_members_data = [
+                        m for m in all_members if m["name"] in self.active_members
+                    ]
+
+                    # Sélectionner le candidat principal selon la logique de rotation
+                    selected_person = self._select_next_candidate(active_members_data)
+
+                    # Sélectionner les backups parmi les autres membres actifs
+                    other_active = [m for m in self.active_members if m != selected_person]
+                    if len(other_active) >= 2:
+                        selected_backup1, selected_backup2 = random.sample(other_active, 2)
+                    elif len(other_active) == 1:
+                        selected_backup1 = other_active[0]
+                        selected_backup2 = selected_person
+                    else:
+                        selected_backup1 = selected_backup2 = selected_person
+
+                    # Mettre à jour le timestamp du membre sélectionné
+                    self._update_member_timestamp(selected_person)
 
                     phrase = random.choice(wrap_phrases).split("{}")
                     self.database.log_result(self.team_name, selected_person)
@@ -262,3 +280,44 @@ class Home:
                         unsafe_allow_html=True,
                     )
                     st.rerun()
+
+    def _select_next_candidate(self, active_members_data: list[dict]) -> str:
+        """
+        Sélectionne le prochain candidat selon une logique de rotation équitable.
+        Priorise les membres qui n'ont jamais été tirés, puis ceux tirés il y a le plus longtemps.
+
+        :param active_members_data: Liste des membres actifs avec leurs données
+        :return: Nom du membre sélectionné
+        """
+        # Séparer les membres jamais tirés de ceux déjà tirés
+        never_drawn = []
+        already_drawn = []
+
+        for member in active_members_data:
+            if "last_drawn_timestamp" not in member or member["last_drawn_timestamp"] is None:
+                never_drawn.append(member["name"])
+            else:
+                already_drawn.append(member)
+
+        # Si tous les membres actifs ont été tirés au moins une fois,
+        # on réinitialise le cycle en choisissant celui tiré il y a le plus longtemps
+        if not never_drawn:
+            # Trier par timestamp (le plus ancien en premier)
+            already_drawn.sort(key=lambda x: x["last_drawn_timestamp"])
+            return already_drawn[0]["name"]
+        else:
+            # Sinon, choisir aléatoirement parmi ceux jamais tirés
+            return random.choice(never_drawn)
+
+    def _update_member_timestamp(self, member_name: str):
+        """
+        Met à jour le timestamp de dernier tirage pour un membre.
+
+        :param member_name: Nom du membre à mettre à jour
+        """
+        all_members = self.database.load_members(self.team_name)
+        member = next((m for m in all_members if m["name"] == member_name), None)
+
+        if member:
+            member["last_drawn_timestamp"] = datetime.now()
+            self.database.save_member(self.team_name, member)
