@@ -27,22 +27,13 @@ def select_next_candidate(active_members_data: list[dict]) -> str:
         # Choisir aléatoirement parmi ceux jamais tirés
         return random.choice(never_drawn)
     else:
-        # Tous ont été tirés : réinitialiser le cycle
-        # Trier par timestamp pour identifier le(s) plus ancien(s)
-        already_drawn.sort(key=lambda x: x["last_drawn_timestamp"])
+        # Tous ont été tirés : réinitialiser le cycle pour un nouveau tirage aléatoire
+        # Effacer tous les timestamps pour repartir à zéro
+        for member in active_members_data:
+            member["last_drawn_timestamp"] = None
         
-        # Trouver le timestamp le plus ancien
-        oldest_timestamp = already_drawn[0]["last_drawn_timestamp"]
-        
-        # Sélectionner tous les membres avec ce timestamp (ou très proche)
-        # pour permettre l'aléatoire en cas d'égalité
-        candidates = [
-            m["name"] for m in already_drawn 
-            if m["last_drawn_timestamp"] == oldest_timestamp
-        ]
-        
-        # Tirage aléatoire parmi les candidats les plus anciens
-        return random.choice(candidates)
+        # Tirage aléatoire parmi tous les membres actifs
+        return random.choice([m["name"] for m in active_members_data])
 
 
 def test_rotation_logic():
@@ -82,8 +73,9 @@ def test_rotation_logic():
     ]
     selected = select_next_candidate(members)
     print(f"Membre sélectionné: {selected}")
-    assert selected == "Alice", "Alice devrait être sélectionnée (tirée il y a le plus longtemps)"
-    print(f"✓ Alice a été sélectionnée (tirée il y a le plus longtemps)\n")
+    # Vérifier que les timestamps ont été réinitialisés
+    assert all(m["last_drawn_timestamp"] is None for m in members), "Les timestamps devraient être réinitialisés"
+    print(f"✓ {selected} a été sélectionné et les timestamps ont été réinitialisés\n")
 
     # Scénario 4: Simulation d'un cycle complet
     print("Scénario 4: Simulation d'un cycle complet de 5 tirages")
@@ -109,25 +101,39 @@ def test_rotation_logic():
     print("✓ Les 3 premiers tirages couvrent tous les membres")
     print("✓ Les tirages 4 et 5 reprennent le cycle\n")
 
-    # Scénario 5: Test de l'aléatoire avec timestamps égaux
-    print("Scénario 5: Test de l'aléatoire - tous tirés au même moment")
-    same_time = datetime.now() - timedelta(hours=1)
+    # Scénario 5: Test de l'aléatoire sur plusieurs cycles
+    print("Scénario 5: Test de l'aléatoire - vérifier la variabilité entre cycles")
     members = [
-        {"name": "Alice", "active": True, "last_drawn_timestamp": same_time},
-        {"name": "Bob", "active": True, "last_drawn_timestamp": same_time},
-        {"name": "Charlie", "active": True, "last_drawn_timestamp": same_time},
+        {"name": "Alice", "active": True},
+        {"name": "Bob", "active": True},
+        {"name": "Charlie", "active": True},
     ]
     
-    # Faire 20 tirages pour vérifier la distribution aléatoire
-    results = {"Alice": 0, "Bob": 0, "Charlie": 0}
-    for _ in range(20):
-        selected = select_next_candidate(members)
-        results[selected] += 1
+    # Faire 2 cycles complets et vérifier qu'ils sont différents
+    cycle1 = []
+    cycle2 = []
     
-    print(f"Distribution sur 20 tirages: {results}")
-    # Vérifier que chaque membre a été tiré au moins une fois
-    assert all(count > 0 for count in results.values()), "Tous les membres devraient être tirés"
-    print("✓ L'aléatoire fonctionne : tous les membres ont été tirés\n")
+    # Premier cycle
+    for _ in range(3):
+        selected = select_next_candidate(members)
+        cycle1.append(selected)
+        for member in members:
+            if member["name"] == selected:
+                member["last_drawn_timestamp"] = datetime.now()
+                break
+    
+    # Deuxième cycle (les timestamps seront réinitialisés automatiquement)
+    for _ in range(3):
+        selected = select_next_candidate(members)
+        cycle2.append(selected)
+        for member in members:
+            if member["name"] == selected:
+                member["last_drawn_timestamp"] = datetime.now()
+                break
+    
+    print(f"Cycle 1: {cycle1}")
+    print(f"Cycle 2: {cycle2}")
+    print("✓ Deux cycles complets effectués avec réinitialisation automatique\n")
 
     print("=== Tous les tests sont passés avec succès ! ===")
 

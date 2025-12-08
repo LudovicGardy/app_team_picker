@@ -290,8 +290,8 @@ class Home:
     def _select_next_candidate(self, active_members_data: list[dict]) -> str:
         """
         Sélectionne le prochain candidat selon une logique de rotation équitable avec aléatoire.
-        Priorise les membres qui n'ont jamais été tirés, puis tire aléatoirement
-        parmi ceux qui n'ont pas été tirés récemment.
+        Priorise les membres qui n'ont jamais été tirés, puis réinitialise le cycle
+        pour un nouveau tirage aléatoire.
 
         :param active_members_data: Liste des membres actifs avec leurs données
         :return: Nom du membre sélectionné
@@ -309,22 +309,14 @@ class Home:
             # Choisir aléatoirement parmi ceux jamais tirés
             return random.choice(never_drawn)
         else:
-            # Tous ont été tirés : réinitialiser le cycle
-            # Trier par timestamp pour identifier le(s) plus ancien(s)
-            already_drawn.sort(key=lambda x: x["last_drawn_timestamp"])
+            # Tous ont été tirés : réinitialiser le cycle pour un nouveau tirage aléatoire
+            # Effacer tous les timestamps pour repartir à zéro
+            for member in active_members_data:
+                member["last_drawn_timestamp"] = None
+                self.database.save_member(self.team_name, member)
             
-            # Trouver le timestamp le plus ancien
-            oldest_timestamp = already_drawn[0]["last_drawn_timestamp"]
-            
-            # Sélectionner tous les membres avec ce timestamp (ou très proche)
-            # pour permettre l'aléatoire en cas d'égalité
-            candidates = [
-                m["name"] for m in already_drawn 
-                if m["last_drawn_timestamp"] == oldest_timestamp
-            ]
-            
-            # Tirage aléatoire parmi les candidats les plus anciens
-            return random.choice(candidates)
+            # Tirage aléatoire parmi tous les membres actifs
+            return random.choice([m["name"] for m in active_members_data])
 
     def _update_member_timestamp(self, member_name: str):
         """
