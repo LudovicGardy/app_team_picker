@@ -289,13 +289,13 @@ class Home:
 
     def _select_next_candidate(self, active_members_data: list[dict]) -> str:
         """
-        Sélectionne le prochain candidat selon une logique de rotation équitable.
-        Priorise les membres qui n'ont jamais été tirés, puis ceux tirés il y a le plus longtemps.
+        Sélectionne le prochain candidat selon une logique de rotation équitable avec aléatoire.
+        Priorise les membres qui n'ont jamais été tirés, puis tire aléatoirement
+        parmi ceux qui n'ont pas été tirés récemment.
 
         :param active_members_data: Liste des membres actifs avec leurs données
         :return: Nom du membre sélectionné
         """
-        # Séparer les membres jamais tirés de ceux déjà tirés
         never_drawn = []
         already_drawn = []
 
@@ -305,15 +305,26 @@ class Home:
             else:
                 already_drawn.append(member)
 
-        # Si tous les membres actifs ont été tirés au moins une fois,
-        # on réinitialise le cycle en choisissant celui tiré il y a le plus longtemps
-        if not never_drawn:
-            # Trier par timestamp (le plus ancien en premier)
-            already_drawn.sort(key=lambda x: x["last_drawn_timestamp"])
-            return already_drawn[0]["name"]
-        else:
-            # Sinon, choisir aléatoirement parmi ceux jamais tirés
+        if never_drawn:
+            # Choisir aléatoirement parmi ceux jamais tirés
             return random.choice(never_drawn)
+        else:
+            # Tous ont été tirés : réinitialiser le cycle
+            # Trier par timestamp pour identifier le(s) plus ancien(s)
+            already_drawn.sort(key=lambda x: x["last_drawn_timestamp"])
+            
+            # Trouver le timestamp le plus ancien
+            oldest_timestamp = already_drawn[0]["last_drawn_timestamp"]
+            
+            # Sélectionner tous les membres avec ce timestamp (ou très proche)
+            # pour permettre l'aléatoire en cas d'égalité
+            candidates = [
+                m["name"] for m in already_drawn 
+                if m["last_drawn_timestamp"] == oldest_timestamp
+            ]
+            
+            # Tirage aléatoire parmi les candidats les plus anciens
+            return random.choice(candidates)
 
     def _update_member_timestamp(self, member_name: str):
         """
