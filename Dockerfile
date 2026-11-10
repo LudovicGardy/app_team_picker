@@ -11,11 +11,11 @@ RUN apt-get update && apt-get install -y gcc libffi-dev build-essential curl && 
     pip install uv && \
     apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Copy only the config file
-COPY pyproject.toml ./
+# Copy only the dependency files
+COPY pyproject.toml uv.lock ./
 
-# Generate requirements.txt file from pyproject.toml
-RUN uv pip compile --output-file=requirements.txt pyproject.toml
+# Pin requirements.txt to the versions in uv.lock (the ones tested locally)
+RUN uv export --frozen --no-dev --no-hashes --no-emit-project --output-file=requirements.txt
 
 # Install dependencies in a temporary venv
 RUN python -m venv /venv && \
