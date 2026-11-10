@@ -1,0 +1,25 @@
+# Production compose, deployed by /opt/infra/bin/deploy.sh on the VPS.
+# Run from <app>/<env>/src/, so ../.env is /opt/apps/teampicker/prod/.env (decrypted secrets).
+# IMAGE_TAG is the full git SHA, set by deploy.sh. No ports: Caddy reaches app:8080 over `edge`.
+# The image listens on 8501 by default (docker-compose.yaml, local); production overrides it.
+services:
+  app:
+    image: ghcr.io/ludovicgardy/app_team_picker:${IMAGE_TAG:?IMAGE_TAG must be set}
+    command: ["streamlit", "run", "main.py", "--server.port=8080", "--server.address=0.0.0.0", "--server.headless=true"]
+    env_file: ../.env
+    restart: unless-stopped
+    mem_limit: 512m
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8080/_stcore/health', timeout=4)"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      edge:
+        aliases:
+          - teampicker-prod
+
+networks:
+  edge:
+    external: true
