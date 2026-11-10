@@ -86,6 +86,20 @@ You can run the application in two ways:
 
 ---
 
+## 🚀 Production
+
+Every push to `main` runs `.github/workflows/deploy.yml`: GitHub Actions builds the image,
+pushes it to `ghcr.io/ludovicgardy/app_team_picker:<sha>`, then runs
+`deploy teampicker prod <sha>` on the VPS over a restricted SSH key.
+
+- `compose.prod.yaml`: the production service (Streamlit on 8080 behind Caddy, no host port).
+- `.env.prod.sops`: production secrets, encrypted with sops + age (variable names in
+  `.env.prod.sops.example`). Edit with `sops edit --input-type dotenv --output-type dotenv .env.prod.sops`.
+- The image installs the versions pinned in `uv.lock`: run `uv lock` after changing a dependency.
+- Roll back to the previous release on the VPS: `/opt/infra/bin/rollback.sh teampicker prod`.
+
+---
+
 ## 🛠️ Development
 
 ### Pre-commit Hooks
