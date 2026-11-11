@@ -82,7 +82,7 @@ You can run the application in two ways:
    ```
 
 4. **Access the app**
-   Open your browser at: [http://localhost:8504](http://localhost:8504)
+   Open your browser at: [http://localhost:10530](http://localhost:10530)
 
 ---
 
