@@ -7,5 +7,4 @@ creation_rules:
     key_groups:
       - age:
           - age18z89e6tr67v7jelaqmh8nuvh4hdlcm835m72rulyku9r5lck0dvquupvln  # Ludovic's Mac
-          - age1a5vgyu66jar2z2dyutm55paut5k8vvqw5vf0vtq3sfz7jx9ut3xqt3xay8  # VPS srv2147298 (2.25.1.160), preprod
           - age12xr3dapl43s3v4mfzvphl6h584p48d482lg3jf27txj4mthd8esqfrkpx2  # VPS srv708948 (46.202.175.150), prod
