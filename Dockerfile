@@ -1,7 +1,7 @@
 # ===============================
 # Stage 1: build with all tools
 # ===============================
-FROM python:3.13-rc-slim AS builder
+FROM python:3.13-slim AS builder
 
 WORKDIR /app
 
@@ -25,7 +25,7 @@ RUN python -m venv /venv && \
 # ===============================
 # Stage 2: lightweight image for execution
 # ===============================
-FROM python:3.13-rc-slim AS runtime
+FROM python:3.13-slim AS runtime
 
 # Create a non-root user
 RUN useradd -m appuser
