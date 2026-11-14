@@ -71,12 +71,14 @@ You can run the application in two ways:
 
 1. **Make sure Docker Desktop is running**
 
-2. **Build and start the app**, from the project directory
+2. **Create the `.env`** from the template and fill in the values: `cp .env.example .env`
+
+3. **Build and start the app**, from the project directory
    ```bash
    ./start-app.sh   # builds the image, starts compose.yaml, waits for the container, prints the URL
    ```
 
-3. **Access the app**
+4. **Access the app**
    Open your browser at: [http://localhost:10530](http://localhost:10530)
 
 4. **Stop the app**
