@@ -1,0 +1,32 @@
+# The Dockerfile does COPY . . : without this file, everything lying in the app folder
+# (local .venv, .git, the Firebase key file, caches) would enter the image and be sent
+# as build context.
+
+.git
+.github
+.gitignore
+.dockerignore
+
+# Secrets. The local run gets .env through env_file in compose.yaml (src/config.py reads
+# the process environment when it finds no .env file). On the server the values come
+# from .env.prod.sops through compose.prod.yaml.
+.env
+.env.*
+app-team-picker-firebase.json
+
+# Python, venv, caches
+.venv/
+**/__pycache__/
+*.py[cod]
+.mypy_cache/
+.pytest_cache/
+.ipynb_checkpoints/
+.coverage*
+coverage.xml
+junit.xml
+
+# Archives and local notebooks, not needed at runtime
+_archives/
+*.ipynb
+
+.DS_Store

@@ -78,7 +78,7 @@ You can run the application in two ways:
 
 3. **Build and start the app**
    ```bash
-   docker-compose up --build
+   docker compose up --build
    ```
 
 4. **Access the app**
