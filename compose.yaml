@@ -1,0 +1,17 @@
+# Local run on the Mac. Host port from Apps/__ports_inventory.csv (slot 53), bound to
+# 127.0.0.1 and written here, never as ${VAR}. The secrets come from .env (kept out of
+# the image, see .dockerignore): src/config.py falls back on the process environment.
+# Production uses compose.prod.yaml.
+name: app_teampicker
+
+services:
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:10530:8501"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - STREAMLIT_SERVER_PORT=8501
+      - STREAMLIT_SERVER_ADDRESS=0.0.0.0
