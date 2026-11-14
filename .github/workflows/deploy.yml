@@ -1,8 +1,18 @@
+# Build and deploy: every push to main (Markdown-only pushes aside) builds the image
+# ghcr.io/ludovicgardy/<repo>:<full sha> and pushes it to GHCR. When the repository variable
+# DEPLOY_ENABLED is "true", the deploy job then runs `deploy <app> prod <sha>` on the VPS over
+# SSH, with a key restricted to that one command (/opt/infra/bin/gh-deploy.sh). deploy.sh
+# decrypts .env.prod.sops, pulls the image, runs compose.prod.yaml, waits for healthy
+# containers and goes back to the previous tag on failure.
+# Repository secrets: DEPLOY_SSH_KEY, DEPLOY_HOST, DEPLOY_KNOWN_HOSTS (set with the infra agent
+# desk's add-app skill). Without DEPLOY_ENABLED, a push only builds the image.
+
 name: Build and deploy
 
 on:
   push:
     branches: [main]
+    paths-ignore: ["**.md"]
   workflow_dispatch:
 
 concurrency:
@@ -34,6 +44,8 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
 
   deploy:
     needs: build
