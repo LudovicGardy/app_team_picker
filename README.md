@@ -21,7 +21,7 @@ You can run the application in two ways:
 - **Locally using `uv`**
 - **Using Docker Compose**
 
-### 🔧 Option 1 — Run Locally with `uv`
+### 🔧 Option 1: Run Locally with `uv`
 
 > `uv` is a fast and modern Python tool that handles virtual environments and dependencies via `pyproject.toml`.
 
@@ -67,22 +67,25 @@ You can run the application in two ways:
    streamlit run main.py
    ```
 
-### 🐳 Option 2 — Run with Docker Compose
+### 🐳 Option 2: Run with Docker
 
-1. **Make sure Docker and Docker Compose are installed and running**
+1. **Make sure Docker Desktop is running**
 
-2. **Go to the project directory**
+2. **Build and start the app**, from the project directory
    ```bash
-   cd path/to/app_folder
+   ./start-app.sh   # builds the image, starts compose.yaml, waits for the container, prints the URL
    ```
 
-3. **Build and start the app**
-   ```bash
-   docker compose up --build
-   ```
-
-4. **Access the app**
+3. **Access the app**
    Open your browser at: [http://localhost:10530](http://localhost:10530)
+
+4. **Stop the app**
+   ```bash
+   ./stop-app.sh
+   ```
+
+`start-app.sh` and `stop-app.sh` are shared by every Docker app of `Apps/`: they are edited
+in `apps_django/sotis_pj_template` only, then copied here (`Apps/CLAUDE.md`).
 
 ---
 
