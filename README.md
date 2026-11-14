@@ -89,7 +89,7 @@ You can run the application in two ways:
 ## 🚀 Production
 
 Every push to `main` runs `.github/workflows/deploy.yml`: GitHub Actions builds the image,
-pushes it to `ghcr.io/ludovicgardy/app_team_picker:<sha>`, then runs
+pushes it to `ghcr.io/ludovicgardy/app_teampicker:<sha>`, then runs
 `deploy teampicker prod <sha>` on the VPS over a restricted SSH key.
 
 - `compose.prod.yaml`: the production service (Streamlit on 8080 behind Caddy, no host port).

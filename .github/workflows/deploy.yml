@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: false
 
 env:
-  IMAGE: ghcr.io/ludovicgardy/app_team_picker
+  IMAGE: ghcr.io/ludovicgardy/app_teampicker
 
 jobs:
   build:

@@ -4,7 +4,7 @@
 # The image listens on 8501 by default (docker-compose.yaml, local); production overrides it.
 services:
   app:
-    image: ghcr.io/ludovicgardy/app_team_picker:${IMAGE_TAG:?IMAGE_TAG must be set}
+    image: ghcr.io/ludovicgardy/app_teampicker:${IMAGE_TAG:?IMAGE_TAG must be set}
     command: ["streamlit", "run", "main.py", "--server.port=8080", "--server.address=0.0.0.0", "--server.headless=true"]
     env_file: ../.env
     restart: unless-stopped
